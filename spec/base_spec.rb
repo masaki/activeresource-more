@@ -56,3 +56,105 @@ describe ActiveResource::More::Base, '#method_missing' do
     it_should_behave_like '#method_missing works with self.columns'
   end
 end
+
+describe ActiveResource::More::Base, '#create_or_update' do
+  subject { BaseTest.new }
+
+  it 'should call create when resource does not have id' do
+    mock(subject).new_record? { true }
+    mock(subject).create { true }
+    subject.instance_eval { create_or_update }
+  end
+
+  it 'should call update when resource has id' do
+    mock(subject).new_record? { false }
+    mock(subject).update { true }
+    subject.instance_eval { create_or_update }
+  end
+end
+
+describe ActiveResource::More::Base, '#save' do
+  [ true, false ].each do |result|
+    describe "when #create_or_update returns #{result.to_s}:" do
+      subject do
+        BaseTest.new.tap do |resource|
+          mock(resource).create_or_update { result }
+        end
+      end
+
+      it "should call #create_or_update and return #{result.to_s}" do
+        matcher = result ? be_true : be_false
+        subject.save.should matcher
+      end
+    end
+  end
+end
+
+describe ActiveResource::More::Base, '#save!' do
+  describe 'when #create_or_update returns true:' do
+    subject do
+      BaseTest.new.tap do |resource|
+        mock(resource).create_or_update { true }
+      end
+    end
+
+    it 'should call #create_or_update and return true' do
+      subject.save!.should be_true
+    end
+  end
+
+  describe 'when #create_or_update returns false:' do
+    subject do
+      BaseTest.new.tap do |resource|
+        mock(resource).create_or_update { false }
+      end
+    end
+
+    it 'should call #create_or_update and raise ActiveResource::ResourceNotSaved' do
+      lambda { subject.save! }.should raise_error(ActiveResource::ResourceNotSaved)
+    end
+  end
+end
+
+describe ActiveResource::More::Base, '#update_attributes' do
+  [ true, false ].each do |result|
+    describe "when #save returns #{result.to_s}:" do
+      subject do
+        BaseTest.new.tap do |resource|
+          mock(resource).save { result }
+        end
+      end
+
+      it "should call #save and return #{result.to_s}" do
+        matcher = result ? be_true : be_false
+        subject.update_attributes(:foo => 1).should matcher
+      end
+    end
+  end
+end
+
+describe ActiveResource::More::Base, '#update_attributes!' do
+  describe 'when #save! returns true:' do
+    subject do
+      BaseTest.new.tap do |resource|
+        mock(resource).save! { true }
+      end
+    end
+
+    it 'should call #save! and return true' do
+      subject.update_attributes!({}).should be_true
+    end
+  end
+
+  describe 'when #save! raise ActiveResource::ResourceNotSaved:' do
+    subject do
+      BaseTest.new.tap do |resource|
+        mock(resource).save! { raise ActiveResource::ResourceNotSaved }
+      end
+    end
+
+    it 'should call #save and raise ActiveResource::ResourceNotSaved' do
+      lambda { subject.update_attributes!({}) }.should raise_error(ActiveResource::ResourceNotSaved)
+    end
+  end
+end
