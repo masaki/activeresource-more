@@ -1,8 +1,7 @@
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 require 'rubygems'
-require 'activeresource'
-require 'activeresource/more'
+require 'active_resource/more'
 require 'spec'
 require 'spec/autorun'
 
