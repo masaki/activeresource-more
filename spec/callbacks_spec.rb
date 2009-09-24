@@ -1,12 +1,12 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
-class CallbacksTest < ActiveResource::Base
+class CallbacksTestResource < ActiveResource::Base
   include ActiveResource::More::Callbacks
   self.site = 'http://localhost:3000'
 end
 
 describe ActiveResource::More::Callbacks, '#create' do
-  subject { CallbacksTest.new }
+  subject { CallbacksTestResource.new }
 
   it 'should call before_create and after_create' do
     mock(subject).before_create
@@ -18,7 +18,7 @@ describe ActiveResource::More::Callbacks, '#create' do
 end
 
 describe ActiveResource::More::Callbacks, '#update' do
-  subject { CallbacksTest.new(:id => 1) }
+  subject { CallbacksTestResource.new(:id => 1) }
 
   it 'should call before_update and after_update' do
     mock(subject).before_update
@@ -30,7 +30,7 @@ describe ActiveResource::More::Callbacks, '#update' do
 end
 
 describe ActiveResource::More::Callbacks, '#destroy' do
-  subject { CallbacksTest.new(:id => 1) }
+  subject { CallbacksTestResource.new(:id => 1) }
 
   it 'should call before_destroy and after_destroy' do
     mock(subject).before_destroy
@@ -43,7 +43,7 @@ end
 
 describe ActiveResource::More::Callbacks, '#save' do
   describe 'when called from new resource:' do
-    subject { CallbacksTest.new }
+    subject { CallbacksTestResource.new }
 
     it 'should call save and create hooks' do
       mock(subject).before_save
@@ -59,7 +59,7 @@ describe ActiveResource::More::Callbacks, '#save' do
   end
 
   describe 'when called from existing resource:' do
-    subject { CallbacksTest.new(:id => 1) }
+    subject { CallbacksTestResource.new(:id => 1) }
 
     it 'should call save and update hooks' do
       mock(subject).before_save
