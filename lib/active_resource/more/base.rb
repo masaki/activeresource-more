@@ -1,6 +1,3 @@
-require 'active_support/core_ext/hash/indifferent_access'
-require 'active_resource'
-
 module ActiveResource
   class ResourceNotSaved < StandardError
   end

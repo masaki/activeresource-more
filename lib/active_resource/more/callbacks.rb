@@ -1,6 +1,3 @@
-require 'active_record/callbacks'
-require 'active_resource/more/base'
-
 module ActiveResource
   module More
     module Callbacks
