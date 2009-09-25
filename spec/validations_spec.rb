@@ -7,6 +7,9 @@ class ValidationsTestResource < ActiveResource::Base
 end
 
 describe ActiveResource::More::Validations, '.validates_acceptance_of' do
+  before { @repairs = record_validations(ValidationsTestResource) }
+  after { reset_validations(@repairs) }
+
   subject do
     ValidationsTestResource.validates_acceptance_of(:foo, :baz)
     ValidationsTestResource.new
@@ -33,6 +36,9 @@ describe ActiveResource::More::Validations, '.validates_acceptance_of' do
 end
 
 describe ActiveResource::More::Validations, '.validates_confirmation_of' do
+  before { @repairs = record_validations(ValidationsTestResource) }
+  after { reset_validations(@repairs) }
+
   subject do
     ValidationsTestResource.validates_confirmation_of(:foo)
     ValidationsTestResource.new
@@ -68,42 +74,85 @@ describe ActiveResource::More::Validations, '.validates_confirmation_of' do
 end
 
 describe ActiveResource::More::Validations, '.validates_exclusion_of' do
+  before { @repairs = record_validations(ValidationsTestResource) }
+  after { reset_validations(@repairs) }
+
   subject do
+    ValidationsTestResource.validates_exclusion_of(:foo, :in => %w[ bar baz ])
     ValidationsTestResource.new
+  end
+
+  it 'should be valid when attribute is not in exclusion list' do
+    subject.foo = 'quux'
+    subject.should be_valid
+  end
+
+  it 'should not be valid when attribute is in exclusion list' do
+    subject.foo = 'bar'
+    subject.should_not be_valid
   end
 end
 
 describe ActiveResource::More::Validations, '.validates_inclusion_of' do
+  before { @repairs = record_validations(ValidationsTestResource) }
+  after { reset_validations(@repairs) }
+
   subject do
+    ValidationsTestResource.validates_inclusion_of(:foo, :in => %w[ bar baz ])
     ValidationsTestResource.new
+  end
+
+  it 'should be valid when attribute is in inclusion list' do
+    subject.foo = 'bar'
+    subject.should be_valid
+  end
+
+  it 'should not be valid when attribute is not in inclusion list' do
+    subject.foo = 'quux'
+    subject.should_not be_valid
   end
 end
 
 describe ActiveResource::More::Validations, '.validates_format_of' do
+  before { @repairs = record_validations(ValidationsTestResource) }
+  after { reset_validations(@repairs) }
+
   subject do
     ValidationsTestResource.new
   end
 end
 
 describe ActiveResource::More::Validations, '.validates_length_of' do
+  before { @repairs = record_validations(ValidationsTestResource) }
+  after { reset_validations(@repairs) }
+
   subject do
     ValidationsTestResource.new
   end
 end
 
 describe ActiveResource::More::Validations, '.validates_numericality_of' do
+  before { @repairs = record_validations(ValidationsTestResource) }
+  after { reset_validations(@repairs) }
+
   subject do
     ValidationsTestResource.new
   end
 end
 
 describe ActiveResource::More::Validations, '.validates_presence_of' do
+  before { @repairs = record_validations(ValidationsTestResource) }
+  after { reset_validations(@repairs) }
+
   subject do
     ValidationsTestResource.new
   end
 end
 
 describe ActiveResource::More::Validations, '.validates_uniqueness_of' do
+  before { @repairs = record_validations(ValidationsTestResource) }
+  after { reset_validations(@repairs) }
+
   subject do
     ValidationsTestResource.new
   end
