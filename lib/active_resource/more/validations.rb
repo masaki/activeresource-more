@@ -6,16 +6,12 @@ module ActiveResource
   end
 
   module More
-    class Error < ActiveRecord::Error
-    end
-
-    class Errors < ActiveRecord::Errors
-    end
+    class Error  < ActiveRecord::Error;  end
+    class Errors < ActiveRecord::Errors; end
 
     module Validations
       def self.included(base) #:nodoc:
         base.extend ActiveRecord::Validations::ClassMethods
-        base.extend ClassMethods # override
 
         base.class_eval do
           include Base
@@ -25,22 +21,6 @@ module ActiveResource
 
           include ActiveSupport::Callbacks
           define_callbacks *ActiveRecord::Validations::VALIDATIONS
-        end
-      end
-
-      module ClassMethods
-        def validates_acceptance_of(*attr_names) #:nodoc:
-          configuration = { :on => :save, :allow_nil => true, :accept => '1' }
-          configuration.update(attr_names.extract_options!)
-
-          names = attr_names.reject { |name| columns.include?(name.to_sym) }
-          attr_accessor(*names)
-
-          validates_each(attr_names, configuration) do |resource, attr_name, value|
-            unless value == configuration[:accept]
-              resource.errors.add(attr_name, :accepted, :default => configuration[:message])
-            end
-          end
         end
       end
 
@@ -87,14 +67,9 @@ module ActiveResource
         end
 
         protected
-          def validate
-          end
-
-          def validate_on_create
-          end
-
-          def validate_on_update
-          end
+          def validate()           end
+          def validate_on_create() end
+          def validate_on_update() end
       end
     end
   end

@@ -19,7 +19,7 @@ module ActiveResource
         end
 
         def columns=(new_columns = []) #:nodoc:
-          @columns = new_columns.map(&:to_sym)
+          @columns = new_columns.map(&:to_s)
         end
       end
 
@@ -34,10 +34,14 @@ module ActiveResource
           attributes.update(new_attributes)
         end
 
+        def column_names
+          self.class.columns.map(&:to_s)
+        end
+
         def method_missing(method_symbol, *arguments) #:nodoc:
           super
         rescue NoMethodError => e
-          if self.class.columns.include?(method_symbol)
+          if self.class.columns.include?(method_symbol.to_s)
             send(method_symbol.to_s + '=', nil)
           else
             raise e # rethrow
