@@ -43,6 +43,8 @@ module ActiveResource
         rescue NoMethodError => e
           if self.class.columns.include?(method_symbol.to_s)
             send(method_symbol.to_s + '=', nil)
+          elsif method_symbol.to_s.match(/(\w+)_before_type_cast/)
+            send($1)
           else
             raise e # rethrow
           end

@@ -230,7 +230,73 @@ describe ActiveResource::More::Validations, '.validates_numericality_of' do
   after { reset_validations(@repairs) }
 
   subject do
+    ValidationsTestResource.validates_numericality_of(:foo)
     ValidationsTestResource.new
+  end
+
+  it 'should be valid when attribute is Fixnum' do
+    subject.foo = 1
+    subject.should be_valid
+
+    subject.foo = 1.00
+    subject.should be_valid
+  end
+
+  it 'should be valid when attribute is String of number' do
+    subject.foo = '1'
+    subject.should be_valid
+
+    subject.foo = '+1'
+    subject.should be_valid
+
+    subject.foo = '-1'
+    subject.should be_valid
+
+    subject.foo = '1.00'
+    subject.should be_valid
+  end
+
+  it 'should not be valid when attribute is String' do
+    subject.foo = 'bar'
+    subject.should_not be_valid
+  end
+
+  describe ':only_integer' do
+    subject do
+      ValidationsTestResource.validates_numericality_of(:foo, :only_integer => true)
+      ValidationsTestResource.new
+    end
+
+    it 'should be valid when attribute is integer' do
+      subject.foo = 1
+      subject.should be_valid
+
+      subject.foo = "1"
+      subject.should be_valid
+
+      subject.foo = -1
+      subject.should be_valid
+    end
+
+    it 'should not be valid when attribute is not integer' do
+      subject.foo = 1.00
+      subject.should_not be_valid
+    end
+  end
+
+  describe ':equal_to' do
+  end
+  describe ':greater_than' do
+  end
+  describe ':greater_than_or_equal_to' do
+  end
+  describe ':less_than' do
+  end
+  describe ':less_than_or_equal_to' do
+  end
+  describe ':odd' do
+  end
+  describe ':even' do
   end
 end
 
