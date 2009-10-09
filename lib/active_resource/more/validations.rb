@@ -6,12 +6,13 @@ module ActiveResource
   end
 
   module More
-    class Error  < ActiveRecord::Error;  end
-    class Errors < ActiveRecord::Errors; end
+    class Error  < ::ActiveRecord::Error;  end
+    class Errors < ::ActiveRecord::Errors; end
 
     module Validations
       def self.included(base) #:nodoc:
-        base.extend ActiveRecord::Validations::ClassMethods
+        base.extend ::ActiveRecord::Validations::ClassMethods
+        base.extend ClassMethods
 
         base.class_eval do
           include Base
@@ -19,8 +20,14 @@ module ActiveResource
 
           alias_method_chain :save!, :validation
 
-          include ActiveSupport::Callbacks
-          define_callbacks *ActiveRecord::Validations::VALIDATIONS
+          include ::ActiveSupport::Callbacks
+          define_callbacks *::ActiveRecord::Validations::VALIDATIONS
+        end
+      end
+
+      module ClassMethods
+        def validates_uniqueness_of(*args)
+          raise NoMethodError
         end
       end
 
@@ -37,7 +44,7 @@ module ActiveResource
           if valid?
             save_without_validation!
           else
-            raise ActiveResource::ResourceInvalid.new
+            raise ::ActiveResource::ResourceInvalid.new
           end
         end
 

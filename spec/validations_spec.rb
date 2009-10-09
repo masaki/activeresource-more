@@ -271,7 +271,7 @@ describe ActiveResource::More::Validations, '.validates_numericality_of' do
       subject.foo = 1
       subject.should be_valid
 
-      subject.foo = "1"
+      subject.foo = '1'
       subject.should be_valid
 
       subject.foo = -1
@@ -285,18 +285,170 @@ describe ActiveResource::More::Validations, '.validates_numericality_of' do
   end
 
   describe ':equal_to' do
+    subject do
+      ValidationsTestResource.validates_numericality_of(:foo, :equal_to => 1)
+      ValidationsTestResource.new
+    end
+
+    it 'should be valid when attribute is equal to' do
+      subject.foo = 1
+      subject.should be_valid
+
+      subject.foo = '1'
+      subject.should be_valid
+
+      subject.foo = 1.00
+      subject.should be_valid
+    end
+
+    it 'should not be valid when attribute is not equal to' do
+      subject.foo = 2
+      subject.should_not be_valid
+
+      subject.foo = '3'
+      subject.should_not be_valid
+
+      subject.foo = 1.23
+      subject.should_not be_valid
+    end
   end
+
   describe ':greater_than' do
+    subject do
+      ValidationsTestResource.validates_numericality_of(:foo, :greater_than => 5)
+      ValidationsTestResource.new
+    end
+
+    it 'should be valid when attribute is greater than' do
+      subject.foo = 6
+      subject.should be_valid
+
+      subject.foo = 5.01
+      subject.should be_valid
+    end
+
+    it 'should not be valid when attribute is not greater than' do
+      subject.foo = 5
+      subject.should_not be_valid
+
+      subject.foo = 4
+      subject.should_not be_valid
+
+      subject.foo = 5.00
+      subject.should_not be_valid
+    end
   end
+
   describe ':greater_than_or_equal_to' do
+    subject do
+      ValidationsTestResource.validates_numericality_of(:foo, :greater_than_or_equal_to => 5)
+      ValidationsTestResource.new
+    end
+
+    it 'should be valid when attribute is greater than or equal to' do
+      subject.foo = 6
+      subject.should be_valid
+
+      subject.foo = 5.01
+      subject.should be_valid
+
+      subject.foo = 5
+      subject.should be_valid
+
+      subject.foo = 5.00
+      subject.should be_valid
+    end
+
+    it 'should not be valid when attribute is not greater than or equal to' do
+      subject.foo = 4
+      subject.should_not be_valid
+    end
   end
+
   describe ':less_than' do
+    subject do
+      ValidationsTestResource.validates_numericality_of(:foo, :less_than => 5)
+      ValidationsTestResource.new
+    end
+
+    it 'should be valid when attribute is less than' do
+      subject.foo = 4
+      subject.should be_valid
+
+      subject.foo = 4.99
+      subject.should be_valid
+    end
+
+    it 'should not be valid when attribute is not less than' do
+      subject.foo = 5
+      subject.should_not be_valid
+
+      subject.foo = 6
+      subject.should_not be_valid
+
+      subject.foo = 5.00
+      subject.should_not be_valid
+    end
   end
+
   describe ':less_than_or_equal_to' do
+    subject do
+      ValidationsTestResource.validates_numericality_of(:foo, :less_than_or_equal_to => 5)
+      ValidationsTestResource.new
+    end
+
+    it 'should be valid when attribute is less than or equal to' do
+      subject.foo = 4
+      subject.should be_valid
+
+      subject.foo = 4.99
+      subject.should be_valid
+
+      subject.foo = 5
+      subject.should be_valid
+
+      subject.foo = 5.00
+      subject.should be_valid
+    end
+
+    it 'should not be valid when attribute is not less than or equal to' do
+      subject.foo = 6
+      subject.should_not be_valid
+    end
   end
+
   describe ':odd' do
+    subject do
+      ValidationsTestResource.validates_numericality_of(:foo, :odd => true)
+      ValidationsTestResource.new
+    end
+
+    it 'should be valid when attribute is odd number' do
+      subject.foo = 1
+      subject.should be_valid
+    end
+
+    it 'should not be valid when attribute is even number' do
+      subject.foo = 2
+      subject.should_not be_valid
+    end
   end
+
   describe ':even' do
+    subject do
+      ValidationsTestResource.validates_numericality_of(:foo, :even => true)
+      ValidationsTestResource.new
+    end
+
+    it 'should be valid when attribute is even number' do
+      subject.foo = 2
+      subject.should be_valid
+    end
+
+    it 'should not be valid when attribute is odd number' do
+      subject.foo = 1
+      subject.should_not be_valid
+    end
   end
 end
 
@@ -305,15 +457,28 @@ describe ActiveResource::More::Validations, '.validates_presence_of' do
   after { reset_validations(@repairs) }
 
   subject do
+    ValidationsTestResource.validates_presence_of(:foo)
     ValidationsTestResource.new
+  end
+
+  it 'should be valid when attribute is present' do
+    subject.foo = 'bar'
+    subject.should be_valid
+  end
+
+  it 'should not be valid when attribute is blank' do
+    subject.foo = ''
+    subject.should_not be_valid
+
+    subject.foo = nil
+    subject.should_not be_valid
   end
 end
 
 describe ActiveResource::More::Validations, '.validates_uniqueness_of' do
-  before { @repairs = record_validations(ValidationsTestResource) }
-  after { reset_validations(@repairs) }
-
-  subject do
-    ValidationsTestResource.new
+  it 'should raise NoMethodError because this method is not implemented' do
+    lambda {
+      ValidationsTestResource.validates_uniqueness_of
+    }.should raise_error(NoMethodError)
   end
 end
