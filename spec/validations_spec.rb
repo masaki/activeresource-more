@@ -1,18 +1,12 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
-class ValidationsTestResource < ActiveResource::Base
-  include ActiveResource::More::Validations
-  self.site = 'http://localhost:3000'
-  self.columns = [ :foo, :bar ]
-end
-
 describe ActiveResource::More::Validations, '.validates_acceptance_of' do
-  before { @repairs = record_validations(ValidationsTestResource) }
+  before { @repairs = record_validations(TestResource) }
   after { reset_validations(@repairs) }
 
   subject do
-    ValidationsTestResource.validates_acceptance_of(:foo, :baz)
-    ValidationsTestResource.new
+    TestResource.validates_acceptance_of(:foo, :baz)
+    TestResource.new
   end
 
   it 'should define unregistered column attribute accessor' do
@@ -36,12 +30,12 @@ describe ActiveResource::More::Validations, '.validates_acceptance_of' do
 end
 
 describe ActiveResource::More::Validations, '.validates_confirmation_of' do
-  before { @repairs = record_validations(ValidationsTestResource) }
+  before { @repairs = record_validations(TestResource) }
   after { reset_validations(@repairs) }
 
   subject do
-    ValidationsTestResource.validates_confirmation_of(:foo)
-    ValidationsTestResource.new
+    TestResource.validates_confirmation_of(:foo)
+    TestResource.new
   end
 
   it 'should define confirm accessor' do
@@ -74,12 +68,12 @@ describe ActiveResource::More::Validations, '.validates_confirmation_of' do
 end
 
 describe ActiveResource::More::Validations, '.validates_exclusion_of' do
-  before { @repairs = record_validations(ValidationsTestResource) }
+  before { @repairs = record_validations(TestResource) }
   after { reset_validations(@repairs) }
 
   subject do
-    ValidationsTestResource.validates_exclusion_of(:foo, :in => %w[ bar baz ])
-    ValidationsTestResource.new
+    TestResource.validates_exclusion_of(:foo, :in => %w[ bar baz ])
+    TestResource.new
   end
 
   it 'should be valid when attribute is not in exclusion list' do
@@ -94,12 +88,12 @@ describe ActiveResource::More::Validations, '.validates_exclusion_of' do
 end
 
 describe ActiveResource::More::Validations, '.validates_inclusion_of' do
-  before { @repairs = record_validations(ValidationsTestResource) }
+  before { @repairs = record_validations(TestResource) }
   after { reset_validations(@repairs) }
 
   subject do
-    ValidationsTestResource.validates_inclusion_of(:foo, :in => %w[ bar baz ])
-    ValidationsTestResource.new
+    TestResource.validates_inclusion_of(:foo, :in => %w[ bar baz ])
+    TestResource.new
   end
 
   it 'should be valid when attribute is in inclusion list' do
@@ -114,12 +108,12 @@ describe ActiveResource::More::Validations, '.validates_inclusion_of' do
 end
 
 describe ActiveResource::More::Validations, '.validates_format_of' do
-  before { @repairs = record_validations(ValidationsTestResource) }
+  before { @repairs = record_validations(TestResource) }
   after { reset_validations(@repairs) }
 
   subject do
-    ValidationsTestResource.validates_format_of(:foo, :with => /^ba.+/i)
-    ValidationsTestResource.new
+    TestResource.validates_format_of(:foo, :with => /^ba.+/i)
+    TestResource.new
   end
 
   it 'should be valid when attribute is matching' do
@@ -142,15 +136,15 @@ describe ActiveResource::More::Validations, '.validates_format_of' do
 end
 
 describe ActiveResource::More::Validations, '.validates_length_of' do
-  before { @repairs = record_validations(ValidationsTestResource) }
+  before { @repairs = record_validations(TestResource) }
   after { reset_validations(@repairs) }
 
   subject do
-    ValidationsTestResource.new
+    TestResource.new
   end
 
   describe ':minimum' do
-    before { ValidationsTestResource.validates_length_of(:foo, :minimum => 5) }
+    before { TestResource.validates_length_of(:foo, :minimum => 5) }
 
     it 'should be valid when over the minimum' do
       subject.foo = '123456'
@@ -169,7 +163,7 @@ describe ActiveResource::More::Validations, '.validates_length_of' do
   end
 
   describe ':maximum' do
-    before { ValidationsTestResource.validates_length_of(:foo, :maximum => 5) }
+    before { TestResource.validates_length_of(:foo, :maximum => 5) }
 
     it 'should be valid when under the maximum' do
       subject.foo = '1234'
@@ -188,7 +182,7 @@ describe ActiveResource::More::Validations, '.validates_length_of' do
   end
 
   describe ':is' do
-    before { ValidationsTestResource.validates_length_of(:foo, :is => 5) }
+    before { TestResource.validates_length_of(:foo, :is => 5) }
 
     it 'should be valid when equal to' do
       subject.foo = '12345'
@@ -205,7 +199,7 @@ describe ActiveResource::More::Validations, '.validates_length_of' do
   end
 
   describe ':within' do
-    before { ValidationsTestResource.validates_length_of(:foo, :within => 5..10) }
+    before { TestResource.validates_length_of(:foo, :within => 5..10) }
 
     it 'should be valid when within range' do
       subject.foo = '12345'
@@ -226,12 +220,12 @@ describe ActiveResource::More::Validations, '.validates_length_of' do
 end
 
 describe ActiveResource::More::Validations, '.validates_numericality_of' do
-  before { @repairs = record_validations(ValidationsTestResource) }
+  before { @repairs = record_validations(TestResource) }
   after { reset_validations(@repairs) }
 
   subject do
-    ValidationsTestResource.validates_numericality_of(:foo)
-    ValidationsTestResource.new
+    TestResource.validates_numericality_of(:foo)
+    TestResource.new
   end
 
   it 'should be valid when attribute is Fixnum' do
@@ -263,8 +257,8 @@ describe ActiveResource::More::Validations, '.validates_numericality_of' do
 
   describe ':only_integer' do
     subject do
-      ValidationsTestResource.validates_numericality_of(:foo, :only_integer => true)
-      ValidationsTestResource.new
+      TestResource.validates_numericality_of(:foo, :only_integer => true)
+      TestResource.new
     end
 
     it 'should be valid when attribute is integer' do
@@ -286,8 +280,8 @@ describe ActiveResource::More::Validations, '.validates_numericality_of' do
 
   describe ':equal_to' do
     subject do
-      ValidationsTestResource.validates_numericality_of(:foo, :equal_to => 1)
-      ValidationsTestResource.new
+      TestResource.validates_numericality_of(:foo, :equal_to => 1)
+      TestResource.new
     end
 
     it 'should be valid when attribute is equal to' do
@@ -315,8 +309,8 @@ describe ActiveResource::More::Validations, '.validates_numericality_of' do
 
   describe ':greater_than' do
     subject do
-      ValidationsTestResource.validates_numericality_of(:foo, :greater_than => 5)
-      ValidationsTestResource.new
+      TestResource.validates_numericality_of(:foo, :greater_than => 5)
+      TestResource.new
     end
 
     it 'should be valid when attribute is greater than' do
@@ -341,8 +335,8 @@ describe ActiveResource::More::Validations, '.validates_numericality_of' do
 
   describe ':greater_than_or_equal_to' do
     subject do
-      ValidationsTestResource.validates_numericality_of(:foo, :greater_than_or_equal_to => 5)
-      ValidationsTestResource.new
+      TestResource.validates_numericality_of(:foo, :greater_than_or_equal_to => 5)
+      TestResource.new
     end
 
     it 'should be valid when attribute is greater than or equal to' do
@@ -367,8 +361,8 @@ describe ActiveResource::More::Validations, '.validates_numericality_of' do
 
   describe ':less_than' do
     subject do
-      ValidationsTestResource.validates_numericality_of(:foo, :less_than => 5)
-      ValidationsTestResource.new
+      TestResource.validates_numericality_of(:foo, :less_than => 5)
+      TestResource.new
     end
 
     it 'should be valid when attribute is less than' do
@@ -393,8 +387,8 @@ describe ActiveResource::More::Validations, '.validates_numericality_of' do
 
   describe ':less_than_or_equal_to' do
     subject do
-      ValidationsTestResource.validates_numericality_of(:foo, :less_than_or_equal_to => 5)
-      ValidationsTestResource.new
+      TestResource.validates_numericality_of(:foo, :less_than_or_equal_to => 5)
+      TestResource.new
     end
 
     it 'should be valid when attribute is less than or equal to' do
@@ -419,8 +413,8 @@ describe ActiveResource::More::Validations, '.validates_numericality_of' do
 
   describe ':odd' do
     subject do
-      ValidationsTestResource.validates_numericality_of(:foo, :odd => true)
-      ValidationsTestResource.new
+      TestResource.validates_numericality_of(:foo, :odd => true)
+      TestResource.new
     end
 
     it 'should be valid when attribute is odd number' do
@@ -436,8 +430,8 @@ describe ActiveResource::More::Validations, '.validates_numericality_of' do
 
   describe ':even' do
     subject do
-      ValidationsTestResource.validates_numericality_of(:foo, :even => true)
-      ValidationsTestResource.new
+      TestResource.validates_numericality_of(:foo, :even => true)
+      TestResource.new
     end
 
     it 'should be valid when attribute is even number' do
@@ -453,12 +447,12 @@ describe ActiveResource::More::Validations, '.validates_numericality_of' do
 end
 
 describe ActiveResource::More::Validations, '.validates_presence_of' do
-  before { @repairs = record_validations(ValidationsTestResource) }
+  before { @repairs = record_validations(TestResource) }
   after { reset_validations(@repairs) }
 
   subject do
-    ValidationsTestResource.validates_presence_of(:foo)
-    ValidationsTestResource.new
+    TestResource.validates_presence_of(:foo)
+    TestResource.new
   end
 
   it 'should be valid when attribute is present' do
@@ -478,7 +472,7 @@ end
 describe ActiveResource::More::Validations, '.validates_uniqueness_of' do
   it 'should raise NoMethodError because this method is not implemented' do
     lambda {
-      ValidationsTestResource.validates_uniqueness_of
+      TestResource.validates_uniqueness_of
     }.should raise_error(NoMethodError)
   end
 end

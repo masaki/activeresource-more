@@ -41,9 +41,10 @@ module ActiveResource
         def method_missing(method_symbol, *arguments) #:nodoc:
           super
         rescue NoMethodError => e
-          if self.class.columns.include?(method_symbol.to_s)
-            send(method_symbol.to_s + '=', nil)
-          elsif method_symbol.to_s.match(/(\w+)_before_type_cast/)
+          method_name = method_symbol.to_s
+          if column_names.include?(method_name)
+            send(method_name + '=', nil)
+          elsif method_name.match(/(\w+)_before_type_cast/)
             send($1)
           else
             raise e # rethrow
@@ -55,7 +56,7 @@ module ActiveResource
         end
 
         def save! #:nodoc:
-          create_or_update || raise(ActiveResource::ResourceNotSaved)
+          create_or_update || raise(::ActiveResource::ResourceNotSaved)
         end
 
         def update_attributes(attributes) #:nodoc:

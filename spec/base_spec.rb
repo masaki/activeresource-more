@@ -1,13 +1,7 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
-class BaseTestResource < ActiveResource::Base
-  include ActiveResource::More::Base
-  self.site = 'http://localhost:3000'
-  self.columns = [ :foo, :bar ]
-end
-
 describe ActiveResource::More::Base, '#initialize' do
-  subject { BaseTestResource.new }
+  subject { TestResource.new }
 
   it 'should make @attributes instance of HashWithIndifferentAccess' do
     subject.attributes.should be_an_instance_of(HashWithIndifferentAccess)
@@ -19,9 +13,9 @@ end
 
 describe ActiveResource::More::Base, '#attributes=' do
   subject do
-    BaseTestResource.new(:foo => 1).tap do |resource|
-      resource.attributes = { :bar => 2 }
-    end
+    resource = TestResource.new(:foo => 1)
+    resource.attributes = { :bar => 2 }
+    resource
   end
 
   it 'should set specified attribute' do
@@ -46,19 +40,19 @@ describe ActiveResource::More::Base, '#method_missing' do
   end
 
   describe 'when symbol columns:' do
-    subject { BaseTestResource.new(:foo => 1) }
+    subject { TestResource.new(:foo => 1) }
     it_should_behave_like '#method_missing works with self.columns'
   end
 
   describe 'when string columns:' do
-    before { BaseTestResource.columns = %w[ foo bar ] }
-    subject { BaseTestResource.new(:foo => 1) }
+    before { TestResource.columns = %w[ foo bar ] }
+    subject { TestResource.new(:foo => 1) }
     it_should_behave_like '#method_missing works with self.columns'
   end
 end
 
 describe ActiveResource::More::Base, '#create_or_update' do
-  subject { BaseTestResource.new }
+  subject { TestResource.new }
 
   it 'should call create when resource does not have id' do
     mock(subject).new_record? { true }
@@ -77,7 +71,7 @@ describe ActiveResource::More::Base, '#save' do
   [ true, false ].each do |result|
     describe "when #create_or_update returns #{result.to_s}:" do
       subject do
-        BaseTestResource.new.tap do |resource|
+        TestResource.new.tap do |resource|
           mock(resource).create_or_update { result }
         end
       end
@@ -93,7 +87,7 @@ end
 describe ActiveResource::More::Base, '#save!' do
   describe 'when #create_or_update returns true:' do
     subject do
-      BaseTestResource.new.tap do |resource|
+      TestResource.new.tap do |resource|
         mock(resource).create_or_update { true }
       end
     end
@@ -105,7 +99,7 @@ describe ActiveResource::More::Base, '#save!' do
 
   describe 'when #create_or_update returns false:' do
     subject do
-      BaseTestResource.new.tap do |resource|
+      TestResource.new.tap do |resource|
         mock(resource).create_or_update { false }
       end
     end
@@ -120,7 +114,7 @@ describe ActiveResource::More::Base, '#update_attributes' do
   [ true, false ].each do |result|
     describe "when #save returns #{result.to_s}:" do
       subject do
-        BaseTestResource.new.tap do |resource|
+        TestResource.new.tap do |resource|
           mock(resource).save { result }
         end
       end
@@ -136,7 +130,7 @@ end
 describe ActiveResource::More::Base, '#update_attributes!' do
   describe 'when #save! returns true:' do
     subject do
-      BaseTestResource.new.tap do |resource|
+      TestResource.new.tap do |resource|
         mock(resource).save! { true }
       end
     end
@@ -148,7 +142,7 @@ describe ActiveResource::More::Base, '#update_attributes!' do
 
   describe 'when #save! raise ActiveResource::ResourceNotSaved:' do
     subject do
-      BaseTestResource.new.tap do |resource|
+      TestResource.new.tap do |resource|
         mock(resource).save! { raise ActiveResource::ResourceNotSaved }
       end
     end

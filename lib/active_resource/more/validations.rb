@@ -11,18 +11,11 @@ module ActiveResource
 
     module Validations
       def self.included(base) #:nodoc:
-        base.extend ::ActiveRecord::Validations::ClassMethods
-        base.extend ClassMethods
-
         base.class_eval do
-          include Base
+          include ::ActiveRecord::Validations
           include InstanceMethods
-
-          alias_method_chain :save!, :validation
-
-          include ::ActiveSupport::Callbacks
-          define_callbacks *::ActiveRecord::Validations::VALIDATIONS
         end
+        base.extend ClassMethods
       end
 
       module ClassMethods
