@@ -25,7 +25,7 @@ module ActiveResource
       end
 
       module InstanceMethods
-        def save_with_validation(perform_validation = true) #:nodoc:
+        def save_with_validation(perform_validation = true)
           if perform_validation && valid? || !perform_validation
             save_without_validation
           else
@@ -33,7 +33,7 @@ module ActiveResource
           end
         end
 
-        def save_with_validation! #:nodoc:
+        def save_with_validation!
           if valid?
             save_without_validation!
           else
@@ -41,7 +41,7 @@ module ActiveResource
           end
         end
 
-        def valid? #:nodoc:
+        def valid?
           errors.clear
 
           run_callbacks(:validate)
@@ -58,7 +58,7 @@ module ActiveResource
           super
         end
 
-        def invalid? #:nodoc:
+        def invalid?
           !valid?
         end
 

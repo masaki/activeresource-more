@@ -13,24 +13,24 @@ module ActiveResource
         end
       end
 
-      module ClassMethods #:nodoc:
-        def columns #:nodoc:
+      module ClassMethods
+        def columns
           @columns ||= []
         end
 
-        def columns=(new_columns = []) #:nodoc:
+        def columns=(new_columns = [])
           @columns = new_columns.map(&:to_s)
         end
       end
 
-      module InstanceMethods #:nodoc:
+      module InstanceMethods
         def initialize(attributes = {}) #:nodoc:
           super
           @attributes     = @attributes.with_indifferent_access
           @prefix_options = @prefix_options.with_indifferent_access
         end
 
-        def attributes=(new_attributes = {}) #:nodoc:
+        def attributes=(new_attributes = {})
           attributes.update(new_attributes)
         end
 
@@ -59,20 +59,20 @@ module ActiveResource
           create_or_update || raise(::ActiveResource::ResourceNotSaved)
         end
 
-        def update_attributes(attributes) #:nodoc:
+        def update_attributes(attributes)
           self.attributes = attributes
           save
         end
 
-        def update_attributes!(attributes) #:nodoc:
+        def update_attributes!(attributes)
           self.attributes = attributes
           save!
         end
 
-      private
-        def create_or_update #:nodoc:
-          new_record? ? create : update
-        end
+        private
+          def create_or_update #:nodoc:
+            new_record? ? create : update
+          end
       end
     end
   end
