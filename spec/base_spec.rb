@@ -26,28 +26,72 @@ describe ActiveResource::More::Base, '#attributes=' do
   end
 end
 
+describe ActiveResource::More::Base, '#attributes_or_columns' do
+  subject { TestResource.new(:baz => 1) }
+
+  it 'should be an instance of HashWithIndifferentAccess' do
+    subject.attributes_or_columns.should be_an_instance_of(HashWithIndifferentAccess)
+  end
+
+  it 'should be a hash which merged with attributes and columns' do
+    subject.attributes_or_columns.should have_key(:foo)
+    subject.attributes_or_columns.should have_key(:bar)
+    subject.attributes_or_columns.should have_key(:baz)
+
+    subject.attributes_or_columns[:foo].should be_nil
+    subject.attributes_or_columns[:bar].should be_nil
+    subject.attributes_or_columns[:baz].should == 1
+  end
+end
+
+describe ActiveResource::More::Base, '#respond_to?' do
+  subject { TestResource.new(:baz => 1) }
+
+  it 'should be true when key is in columns' do
+    subject.class.column_names.each do |name|
+      subject.should respond_to(name)
+      subject.should respond_to("#{name}?")
+      subject.should respond_to("#{name}=")
+    end
+  end
+  it 'should be true when key is in attributes' do
+    subject.attributes.keys.each do |name|
+      subject.should respond_to(name)
+      subject.should respond_to("#{name}?")
+      subject.should respond_to("#{name}=")
+    end
+  end
+  it 'should be false when key is not in attributes and columns' do
+    subject.should_not respond_to(:quux)
+  end
+end
+
 describe ActiveResource::More::Base, '#method_missing' do
-  shared_examples_for '#method_missing works with self.columns' do
-    it 'should not raise error when fetch assigned attribute' do
-      subject.foo.should == 1
-    end
-    it 'should be nil when fetch not assigned but column-contained attribute' do
-      subject.bar.should be_nil
-    end
-    it 'should raise error when fetch not assigned and not column-contained attribute' do
-      lambda { subject.baz }.should raise_error
-    end
+  subject { TestResource.new(:baz => 'baz') }
+
+  it 'should not raise NoMethodError when key is in columns' do
+    subject.foo.should be_nil
+    subject.bar.should be_nil
+  end
+  it 'should not raise NoMethodError when key is in attributes' do
+    subject.baz.should == 'baz'
   end
 
-  describe 'when symbol columns:' do
-    subject { TestResource.new(:foo => 1) }
-    it_should_behave_like '#method_missing works with self.columns'
+  it 'should assign value to attributes when last key is a "="' do
+    subject.baz = 'quux'
+    subject.baz.should == 'quux'
+  end
+  it 'should check attributes when last key is a "?"' do
+    subject.baz?.should_not be_nil
+    subject.foo?.should be_nil
   end
 
-  describe 'when string columns:' do
-    before { TestResource.columns = %w[ foo bar ] }
-    subject { TestResource.new(:foo => 1) }
-    it_should_behave_like '#method_missing works with self.columns'
+  it 'should return a normal value when assign before_type_cast suffix' do
+    subject.baz_before_type_cast.should == 'baz'
+  end
+
+  it 'should raise NoMethodError when key does not match any conditions' do
+    lambda { subject.missing_method }.should raise_error(NoMethodError)
   end
 end
 

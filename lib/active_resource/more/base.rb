@@ -7,10 +7,8 @@ module ActiveResource
   module More
     module Base
       def self.included(base) #:nodoc:
+        base.__send__ :include, InstanceMethods
         base.extend ClassMethods
-        base.class_eval do
-          include InstanceMethods
-        end
       end
 
       module ClassMethods
@@ -20,6 +18,14 @@ module ActiveResource
 
         def columns=(new_columns = [])
           @columns = new_columns.map(&:to_s)
+        end
+
+        def column_names
+          columns.map(&:to_s).sort
+        end
+
+        def columns_hash
+          columns.inject({}.with_indifferent_access) { |hash, column| hash[column] = nil; hash }
         end
       end
 
@@ -34,20 +40,33 @@ module ActiveResource
           attributes.update(new_attributes)
         end
 
-        def column_names
-          self.class.columns.map(&:to_s)
+        def attributes_or_columns
+          self.class.columns_hash.update(attributes)
+        end
+
+        def respond_to?(method, include_priv = false)
+          method_name = method.to_s
+          method_name.chop! if %[ ? = ].include?(method_name.last)
+
+          attributes_or_columns.has_key?(method_name) ? true : super
         end
 
         def method_missing(method_symbol, *arguments) #:nodoc:
-          super
-        rescue NoMethodError => e
           method_name = method_symbol.to_s
-          if column_names.include?(method_name)
-            send(method_name + '=', nil)
+
+          if method_name.last == "="
+            p method_name
+            attributes[method_name.first(-1)] = arguments.first
+          elsif method_name.last == "?"
+            attributes[method_name.first(-1)]
+          elsif attributes.has_key?(method_name)
+            attributes[method_name]
+          elsif self.class.column_names.include?(method_name)
+            attributes[method_name] = nil
           elsif method_name.match(/(\w+)_before_type_cast/)
-            send($1)
+            __send__($1)
           else
-            raise e # rethrow
+            super
           end
         end
 
