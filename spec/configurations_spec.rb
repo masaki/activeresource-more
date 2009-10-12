@@ -12,7 +12,7 @@ end
 
 describe ActiveResource::Base, '.register_configuration' do
   it 'should assign configuration hash' do
-    key    = 'foobar'
+    key    = 'register_configuration_testing_key'
     config = { :timeout => 60 }
 
     ActiveResource::Base.configurations.should_not have_key(key)
