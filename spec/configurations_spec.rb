@@ -1,14 +1,5 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
-
-ActiveResource::Base.register_configuration(:prefix_with_bar, { :prefix => '/bar' })
-ActiveResource::Base.register_configuration(:configurable, { :prefix => '/baz', :timeout => 10 })
-
-class Configurable < ActiveResource::Base
-  include ActiveResource::More
-
-  self.site   = 'http://localhost:3000'
-  self.prefix = '/foo'
-end
+require File.expand_path(File.dirname(__FILE__) + '/fixtures/configurable')
 
 describe ActiveResource::Base, '.register_configuration' do
   it 'should assign configuration hash' do
@@ -19,7 +10,9 @@ describe ActiveResource::Base, '.register_configuration' do
 
     lambda {
       ActiveResource::Base.register_configuration(key, config)
-    }.should change { ActiveResource::Base.configurations[key] }.from(nil).to(config)
+    }.should change {
+      ActiveResource::Base.configurations[key]
+    }.from(nil).to(config)
   end
 end
 
@@ -27,12 +20,18 @@ describe ActiveResource::More::Configurations, '.load_config' do
   before { Configurable.prefix = '/foo' }
 
   it 'should load configuration under specified key' do
+    ActiveResource::Base.register_configuration(:prefix_with_bar, { :prefix => '/bar' })
+
     lambda {
       Configurable.load_config :prefix_with_bar
     }.should change(Configurable, :prefix).from('/foo').to('/bar')
+
+    Configurable.timeout.should == 60
   end
 
   it 'should load configuration with default model name key when key is not specified' do
+    ActiveResource::Base.register_configuration(:configurable, { :prefix => '/baz', :timeout => 10 })
+
     lambda {
       Configurable.load_config
     }.should change(Configurable, :prefix).from('/foo').to('/baz')
