@@ -65,11 +65,3 @@ def reset_validations(repairs)
     end
   end
 end
-
-# test resource
-class TestResource < ActiveResource::Base
-  include ActiveResource::More
-
-  self.site = 'http://localhost:3000'
-  self.columns = [ :foo, 'bar' ]
-end
