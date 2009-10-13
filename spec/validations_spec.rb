@@ -12,7 +12,7 @@ describe ActiveResource::More::Validations do
     end
 
     it 'should define unregistered column attribute accessor' do
-      subject.should be_respond_to(:terms_of_service)
+      subject.should respond_to(:terms_of_service)
       subject.terms_of_service.should be_nil
     end
 
@@ -39,7 +39,7 @@ describe ActiveResource::More::Validations do
     end
 
     it 'should define confirm accessor' do
-      subject.should be_respond_to(:password_confirmation)
+      subject.should respond_to(:password_confirmation)
       subject.password_confirmation.should be_nil
     end
 
