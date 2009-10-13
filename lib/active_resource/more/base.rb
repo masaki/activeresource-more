@@ -55,7 +55,6 @@ module ActiveResource
           method_name = method_symbol.to_s
 
           if method_name.last == "="
-            p method_name
             attributes[method_name.first(-1)] = arguments.first
           elsif method_name.last == "?"
             attributes[method_name.first(-1)]
