@@ -74,7 +74,7 @@ module ActiveResource
         end
 
         def save! #:nodoc:
-          create_or_update || raise(::ActiveResource::ResourceNotSaved)
+          create_or_update || raise(ResourceNotSaved)
         end
 
         def update_attributes(attributes)
