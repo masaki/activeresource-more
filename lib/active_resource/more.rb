@@ -1,7 +1,9 @@
 require 'active_support'
-require 'active_resource'
 require 'active_record'
+require 'active_record/base'
+require 'active_record/validations'
 
+require 'active_resource'
 require 'active_resource/more/base'
 require 'active_resource/more/configurations'
 require 'active_resource/more/finders'

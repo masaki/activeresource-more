@@ -1,6 +1,6 @@
 module ActiveResource
-  class ResourceNotSaved < StandardError
-  end
+  class ActiveResourceError < StandardError;       end
+  class ResourceNotSaved    < ActiveResourceError; end
 end
 
 module ActiveResource

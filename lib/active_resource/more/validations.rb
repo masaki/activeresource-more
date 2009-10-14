@@ -1,20 +1,21 @@
-silence_stream($stderr) { load 'active_record/validations.rb' }
-
 module ActiveResource
-  class ResourceInvalid < ClientError
-    # TODO: accept resource
+  class ClientResourceInvalid < ActiveResourceError
+    attr_reader :resource
+
+    def initialize(resource)
+      @resource = resource
+      errors = @resource.errors.full_messages.join(I18n.t('support.array.words_connector', :default => ', '))
+      super(I18n.t('activerecord.errors.messages.record_invalid', :errors => errors)) # use AR translate key
+    end
   end
 
   module More
-    class Error  < ::ActiveRecord::Error;  end
-    class Errors < ::ActiveRecord::Errors; end
+    class Error  < ActiveRecord::Error;  end
+    class Errors < ActiveRecord::Errors; end
 
     module Validations
       def self.included(base) #:nodoc:
-        base.class_eval do
-          include ::ActiveRecord::Validations
-          include InstanceMethods
-        end
+        base.__send__ :include, ActiveRecord::Validations, InstanceMethods
         base.extend ClassMethods
       end
 
@@ -37,7 +38,7 @@ module ActiveResource
           if valid?
             save_without_validation!
           else
-            raise ::ActiveResource::ResourceInvalid.new
+            raise ClientResourceInvalid.new(self)
           end
         end
 
