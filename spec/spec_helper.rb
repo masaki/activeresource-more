@@ -10,4 +10,5 @@ Dir[File.dirname(__FILE__) + '/support/**/*.rb'].each { |file| require file }
 
 Spec::Runner.configure do |config|
   config.mock_with :rr
+  config.include Spec::Support::ActiveResource::RepairHelper
 end
