@@ -1,13 +1,5 @@
 module ActiveResource
-  class ClientResourceInvalid < ActiveResourceError
-    attr_reader :resource
-
-    def initialize(resource)
-      @resource = resource
-      errors = @resource.errors.full_messages.join(I18n.t('support.array.words_connector', :default => ', '))
-      super(I18n.t('activerecord.errors.messages.record_invalid', :errors => errors)) # use AR translate key
-    end
-  end
+  class ClientResourceInvalid < ActiveRecord::RecordInvalid; end
 
   module More
     class Error  < ActiveRecord::Error;  end
