@@ -1,18 +1,26 @@
 module ActiveResource
-  class ClientResourceInvalid < ActiveRecord::RecordInvalid; end
+  # Raised by <tt>save!</tt> (and <tt>update_attributes!</tt>) when the resource is invalid.
+  # Please look at ActiveRecord::RecordInvalid for more information.
+  class ClientResourceInvalid < ActiveRecord::RecordInvalid
+  end
 
   module More
-    class Error  < ActiveRecord::Error;  end
-    class Errors < ActiveRecord::Errors; end
+    class Error < ActiveRecord::Error #:nodoc:
+    end
 
+    class Errors < ActiveRecord::Errors #:nodoc:
+    end
+
+    # Module to support client side validation and errors with Active Resource objects.
+    # Please look at ActiveRecord::Validations for more information.
     module Validations
       def self.included(base) #:nodoc:
         base.__send__ :include, ActiveRecord::Validations, InstanceMethods
         base.extend ClassMethods
       end
 
-      module ClassMethods
-        def validates_uniqueness_of(*args)
+      module ClassMethods #:nodoc:
+        def validates_uniqueness_of(*args) #:nodoc:
           raise NoMethodError
         end
       end
